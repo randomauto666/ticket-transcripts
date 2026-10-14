@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transcript · #plotbau-bitfight-4</title>
+  <style>
+    :root {
+      --bg-primary: #0f1117;
+      --bg-secondary: #161b27;
+      --bg-card: #1e2433;
+      --bg-message: #1a1f2e;
+      --bg-message-hover: #1e2435;
+      --accent: #5865f2;
+      --accent-glow: rgba(88, 101, 242, 0.25);
+      --accent-2: #57f287;
+      --text-primary: #e8eaf0;
+      --text-secondary: #99aab5;
+      --text-muted: #5a6a7a;
+      --border: rgba(255,255,255,0.06);
+      --border-accent: rgba(88,101,242,0.4);
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1e2433 0%, #161b27 100%);
+      border-bottom: 1px solid var(--border-accent);
+      padding: 32px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--accent), #7289da);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px var(--accent-glow);
+      flex-shrink: 0;
+    }
+    .header-text h1 {
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .header-text .subtitle {
+      font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;
+    }
+    .header-badge {
+      margin-left: auto;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-accent);
+      color: #7289da;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Layout ── */
+    .layout { max-width: 960px; margin: 0 auto; padding: 32px 24px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+    @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { order: -1; } }
+
+    /* ── Sidebar ── */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+    .stat-value { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+    .stat-value.accent { color: var(--accent); }
+
+    .participant { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .participant-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7289da);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+    }
+    .participant-info { display: flex; flex-direction: column; }
+    .participant-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+    .participant-count { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ── Messages ── */
+    .messages-wrapper { min-width: 0; }
+    .messages-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted); margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .message {
+      display: flex; gap: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      margin-bottom: 2px;
+    }
+    .message:hover { background: var(--bg-message-hover); }
+    .message.bot-message { background: rgba(88,101,242,0.05); }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #5865f2, #7289da);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 700; flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .avatar.bot { background: linear-gradient(135deg, var(--accent), #57f287); }
+    .message-body { flex: 1; min-width: 0; }
+    .message-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+    .author-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+    .author-name.bot-tag { color: var(--accent); }
+    .bot-badge {
+      font-size: 0.65rem; background: var(--accent); color: #fff;
+      padding: 1px 5px; border-radius: 3px; font-weight: 700;
+      letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    .msg-time { font-size: 0.72rem; color: var(--text-muted); }
+    .msg-content { font-size: 0.9rem; color: var(--text-primary); word-break: break-word; line-height: 1.55; }
+    .msg-content a { color: #7289da; text-decoration: none; }
+    .msg-content a:hover { text-decoration: underline; }
+
+    /* ── Embeds ── */
+    .embed {
+      background: var(--bg-message);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      margin-top: 8px;
+      max-width: 480px;
+    }
+    .embed-author { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+    .embed-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .embed-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.5; white-space: pre-wrap; }
+    .embed-field { margin-top: 8px; }
+    .embed-field-name { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .embed-field-value { font-size: 0.82rem; color: var(--text-secondary); }
+    .embed-footer { font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .embed img { max-width: 100%; border-radius: 6px; margin-top: 8px; }
+
+    /* ── Attachments ── */
+    .attachment { margin-top: 8px; }
+    .attachment img { max-width: 400px; max-height: 300px; border-radius: 8px; display: block; border: 1px solid var(--border); }
+    .attachment-file {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px; margin-top: 4px;
+      text-decoration: none; color: var(--text-secondary); font-size: 0.82rem;
+    }
+    .attachment-file:hover { border-color: var(--border-accent); color: var(--text-primary); }
+
+    /* ── Date divider ── */
+    .date-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0 8px; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);
+    }
+    .date-divider::before, .date-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding: 32px 24px;
+      font-size: 0.78rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-icon">🎫</div>
+    <div class="header-text">
+      <h1>#plotbau-bitfight-4</h1>
+      <div class="subtitle">Ticket Transcript · 14.10.2026 um 13:04 UTC</div>
+    </div>
+    <div class="header-badge">Transcript</div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="messages-wrapper">
+    <div class="messages-title">💬 Nachrichtenverlauf</div>
+<div class="date-divider">07. October 2026</div>
+
+    <div class="message bot-message">
+      <div class="avatar bot">T</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name bot-tag">Ticket System</span>
+          <span class="bot-badge">BOT</span>
+          <span class="msg-time">Heute um 09:06</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; &lt;@&amp;1502800290888286391&gt;</div>      </div>
+    </div>
+    <div class="message bot-message">
+      <div class="avatar bot">T</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name bot-tag">Ticket System</span>
+          <span class="bot-badge">BOT</span>
+          <span class="msg-time">Heute um 09:06</span>
+        </div><div class="embed" style="border-left-color:#3498db"><div class="embed-title">🎫 plotbau Ticket</div><div class="embed-desc">ℹ️ Ein Teammitglied wird dir in Kürze helfen!
+Dein Problem wurde gelöst? Klicke den Button unten.</div><div class="embed-field"><div class="embed-field-name">**Nutzer:**</div><div class="embed-field-value">&lt;@1498768663119921173&gt;</div></div><div class="embed-field"><div class="embed-field-name">**Ticket Thema:**</div><div class="embed-field-value">plotbau</div></div><div class="embed-field"><div class="embed-field-name">**Dein Ingamename:**</div><div class="embed-field-value">Bitfight</div></div><div class="embed-field"><div class="embed-field-name">**Kann gefunden werden:**</div><div class="embed-field-value">/p h wilderstier 2</div></div><div class="embed-field"><div class="embed-field-name">**Details für uns:**</div><div class="embed-field-value">Eine litematic wird gestellt mit Mats das ganze ist ein 255er merge aber ihr baut nicht allein sonder mit anderen Leuten zusammen ( 6 )</div></div><div class="embed-field"><div class="embed-field-name">**Zeitraum:**</div><div class="embed-field-value">So schnell wie möglich</div></div><div class="embed-footer">Ticket von bitfight</div></div>      </div>
+    </div>
+    <div class="message bot-message">
+      <div class="avatar bot">T</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name bot-tag">Ticket System</span>
+          <span class="bot-badge">BOT</span>
+          <span class="msg-time">Heute um 09:50</span>
+        </div><div class="embed" style="border-left-color:#2ecc71"><div class="embed-title">✅ Ticket übernommen</div><div class="embed-desc">Das Ticket wird nun von &lt;@1259566003684114483&gt; bearbeitet.</div><div class="embed-footer">Ticket System</div></div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 09:50</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; was zahlst du ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 09:52</span>
+        </div><div class="msg-content">wv  leute habt ihr dafür und was wollt ihr dafür haben &lt;@1259566003684114483&gt;</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">Würde 1-2 Leute schicken</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">welche personen ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">Und Bezahlung musst du uns sagen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">Das siehst du dann</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">(Builder)</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:02</span>
+        </div><div class="msg-content">kommt drauf an wie viel die arbeiten</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:03</span>
+        </div><div class="msg-content">Viel</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:03</span>
+        </div><div class="msg-content">Stellst du die Materialien?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:03</span>
+        </div><div class="msg-content">ja alles da</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:03</span>
+        </div><div class="msg-content">Okay sollte dann kein Problem sein</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:03</span>
+        </div><div class="msg-content">hättest du mir die namen schicken weil finde die builder nicht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:04</span>
+        </div><div class="msg-content">Müsste noch fragen dann</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:04</span>
+        </div><div class="msg-content">Wenn der Auftrag sicher ist</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:04</span>
+        </div><div class="msg-content">ok weil ich würde gern die personen auch einmal vorher über prüfen lassen da ist ja schon ein großer item wert ist der da liegt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:05</span>
+        </div><div class="msg-content">der auftrag wäre sicher wenn ich die personen überprüft habe</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:05</span>
+        </div><div class="msg-content">Müsste Bezahlung wissen weil weiß ja nicht ob die builder das für das Geld machen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:05</span>
+        </div><div class="msg-content">Ist ja ein großer Aufwand</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:06</span>
+        </div><div class="msg-content">kommt drauf an was die machen zwischen 20-50mio</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:06</span>
+        </div><div class="msg-content">und wie gesagt die wären nicht allein die wären mit 6weitern leuten und vieles ist auch schon gebaut</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:06</span>
+        </div><div class="msg-content">Okay</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:11</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; &lt;@1459204366664990911&gt; wäre schonmal bereit da mitzuhelfen und hat auch nun Zugriff auf das Ticket</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:11</span>
+        </div><div class="msg-content">ok wer wäre die zweite person ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:11</span>
+        </div><div class="msg-content">Das sage ich dir je nach zu- oder Absage</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">hi</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">hi</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">ich bräuchte einmal dein ingame name thilo</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">Thilo7815</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:12</span>
+        </div><div class="msg-content">bitte</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:13</span>
+        </div><div class="msg-content">danke ich melde mich gleich zurück</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:13</span>
+        </div><div class="msg-content">ist mein name</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:14</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; zumindest ein Teil des Geldes bräuchten wir vorraus</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:14</span>
+        </div><div class="msg-content">bei solchen summen zahle ich nicht im vorraus du kennst seen ganz gut du kannst ihn fragen ich bin da zuverfässig</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:15</span>
+        </div><div class="msg-content">und da ich nach leistung bezahle ist das auch schwer zu sagen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:15</span>
+        </div><div class="msg-content">thilo wv zeit hättest du pro tag ca ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:16</span>
+        </div><div class="msg-content">also ich hätte viel zeit hab halt so ca bis 14uhr schule</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:16</span>
+        </div><div class="msg-content">ok wv ca ? in stunden</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:16</span>
+        </div><div class="msg-content">mit guter bezahlung baue ich</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:17</span>
+        </div><div class="msg-content">bezahlung ist immer gut bei mir deswegen brauch ich deine stunden anzahl damit ich ca sagen kann was du bekommen würdest</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:17</span>
+        </div><div class="msg-content">also kommt drauf an es gibt stunden da baue ich viel und welche da baue ich weniger</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:17</span>
+        </div><div class="msg-content">hau mal ca raus</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:18</span>
+        </div><div class="msg-content">Ich bezahle dich 😅</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:18</span>
+        </div><div class="msg-content">Mach einfach Überstunden dann wird dein Gehalt passen 🙂</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:18</span>
+        </div><div class="msg-content">ich brauch eine ca zeiit angabe damit ich ein gutes angebot machen kann ^^</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:18</span>
+        </div><div class="msg-content">ich weiß halt nd was valid ist</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">Baut da seen mit ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">ja</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">Sag eif Wie lange du on bist c.c</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">Ahso hätte den gefragt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">kommt drauf an aber 1-5stunden</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:19</span>
+        </div><div class="msg-content">ja der hat keine zeit xD</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:20</span>
+        </div><div class="msg-content">&lt;@1459204366664990911&gt; was um Geld, Bezahlung... geht mit mir ausmachen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:20</span>
+        </div><div class="msg-content">abmachung war 60%</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:20</span>
+        </div><div class="msg-content">ja dann würde ich bei der zeit lage 20mio ca sagen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:20</span>
+        </div><div class="msg-content">kommt aber drauf an wie aktiv da gebaut wird</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:21</span>
+        </div><div class="msg-content">Hier ist es was anderes</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:21</span>
+        </div><div class="msg-content">weil wir bauen in gemeintschaft oder auch mal allein</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:22</span>
+        </div><div class="msg-content">ich halte gleich noch einmal rücksprache mit wilderstier  und warte noch auf nh antwort vom server team und wenn da alles gut ist könnte es heut abend los gehen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:22</span>
+        </div><div class="msg-content">also &lt;@1498768663119921173&gt; schick mich zum plot mit allen ich baue mein chef &lt;@1259566003684114483&gt;  kümmert sich um mein geld</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:23</span>
+        </div><div class="msg-content">ich schreibe gleich noch mal wenn es ageklärt ist</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:23</span>
+        </div><div class="msg-content">was</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:23</span>
+        </div><div class="msg-content">Jo alles klar</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:23</span>
+        </div><div class="msg-content">abgeklärt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:24</span>
+        </div><div class="msg-content">ingame?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:24</span>
+        </div><div class="msg-content">ich halte gleich noch einmal rücksprache mit wilderstier  und warte noch auf nh antwort vom server team und wenn da alles gut ist könnte es heut abend los gehen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:24</span>
+        </div><div class="msg-content">server team</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:25</span>
+        </div><div class="msg-content">???</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:25</span>
+        </div><div class="msg-content">wie abend wv uhr</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:26</span>
+        </div><div class="msg-content">bitte kurz warten</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:27</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:28</span>
+        </div><div class="msg-content">&lt;@1259566003684114483&gt;  kannst du kurz call ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:29</span>
+        </div><div class="msg-content">Oder &lt;@1459204366664990911&gt; geht auch</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:29</span>
+        </div><div class="msg-content">sry darf nd reden</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:30</span>
+        </div><div class="msg-content">aber um wv uhr und brauch noch schemetic</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:31</span>
+        </div><div class="msg-content">Später dann muss ich erstmal auf &lt;@1259566003684114483&gt; warten</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:31</span>
+        </div><div class="msg-content">er kommt gleich</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:32</span>
+        </div><div class="msg-content">Gerade schwer</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:33</span>
+        </div><div class="msg-content">ey bitfight</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:33</span>
+        </div><div class="msg-content">kannst du mal ingame schreiben</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">dann gern später</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">thilo wordest du schon mal auf opsucht gebannt ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">das ist jetzt schlecht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">und unangehnehm</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">js</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">ja</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">wegen ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:36</span>
+        </div><div class="msg-content">also der grund</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:37</span>
+        </div><div class="msg-content">das ist jetzt schlechter zeitpunkt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:37</span>
+        </div><div class="msg-content">erzähl</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:37</span>
+        </div><div class="msg-content">scamen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:37</span>
+        </div><div class="msg-content">ja &lt;@1259566003684114483&gt;  und das bietest du mir an  ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:37</span>
+        </div><div class="msg-content">ist das schlimm</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:38</span>
+        </div><div class="msg-content">ja das ist sehr schlecht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:38</span>
+        </div><div class="msg-content">tut mir leid so kann ich dir leider nicht so möglichkeit geben für mich zu bauen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:38</span>
+        </div><div class="msg-content">nein nein nein</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:38</span>
+        </div><div class="msg-content">nein nein</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:39</span>
+        </div><div class="msg-content">da bei mir ein hoher wer aufm plot ist und ich nicht das risiko eingehen kann</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:39</span>
+        </div><div class="msg-content">Ich kann dir garantieren das thilo ein ehrlicher Spieler ist er hat auch schon an größeren Projekten gebaut</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:39</span>
+        </div><div class="msg-content">ja wirklich</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:39</span>
+        </div><div class="msg-content">Und kannst auch gerne unsere Bewertungen anschauen 🙂</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:39</span>
+        </div><div class="msg-content">ich hab nach mein bann 2häuser gebaut die ich gebaut habe</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:40</span>
+        </div><div class="msg-content">ich bin ehrlich mein bann war 7tage</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:40</span>
+        </div><div class="msg-content">tut mir leid aber da kann ich keine ausnahmen machen  und mein kollege wird da auch nicht mit machen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:40</span>
+        </div><div class="msg-content">nein nein nein</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:40</span>
+        </div><div class="msg-content">gib mir eine chance</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">es war nicht deep</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">es war kreedit</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">ich dank euch für die schnelle hilfe und antwort und wünsch euch das beste</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">den ich nicht zahlen konnte</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">Andere können das ich noch machen ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:41</span>
+        </div><div class="msg-content">das hat nichts mit häusern zutun</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">naja hast du banns schon gehabt ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">es waren 7m</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">das ist nd deep</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">Ich ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">jup</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:42</span>
+        </div><div class="msg-content">Nope</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:43</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; bitte es war ein 7m kredit der nix mit häusern zutun hat</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:43</span>
+        </div><div class="msg-content">teamkamil ich würde da einmal mit seen rücksprache halten</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:43</span>
+        </div><div class="msg-content">weil er dich da am besten kennt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:43</span>
+        </div><div class="msg-content">Ruhe (bitte 😵)</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:43</span>
+        </div><div class="msg-content">Jo kannst machen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:44</span>
+        </div><div class="msg-content">7mio ist extrem viel für mache xD aber naja egal tut mir leid aber thilo wäre raus bei mir</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:44</span>
+        </div><div class="msg-content">jo warte da auf nh antwort</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">Builder | Thilo7815</span>
+          
+          <span class="msg-time">Heute um 14:45</span>
+        </div><div class="msg-content">was soll das</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:49</span>
+        </div><div class="msg-content">Hab ihm raus aus dem ticket</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:49</span>
+        </div><div class="msg-content">sry teamkamil hoffe du hast verstäntis dafür das ich da keine ausnahmen machen kann</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:50</span>
+        </div><div class="msg-content">Ja :/</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:50</span>
+        </div><div class="msg-content">Aber er ist ehrlich</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:50</span>
+        </div><div class="msg-content">Aber Kunde ist König</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:50</span>
+        </div><div class="msg-content">möge sein aber das risiko wäre zu hoch bei dem wert an bau blocke die da sind</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:51</span>
+        </div><div class="msg-content">Ja wäre es mkr auch</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:51</span>
+        </div><div class="msg-content">War eig der beste nach seen den ich schicken würde</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:51</span>
+        </div><div class="msg-content">Kann sein das ich keinen mehr hab der das übernimmt</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:52</span>
+        </div><div class="msg-content">ok und du willst nicht bauen ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:52</span>
+        </div><div class="msg-content">bist ja java spieler oder ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:53</span>
+        </div><div class="msg-content">wie alt bist du wenn ich fragen darf ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:53</span>
+        </div><div class="msg-content">Ne, bin selten am PC und bin net so aktiv zurzeit ingame</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:53</span>
+        </div><div class="msg-content">Hab Java auch aber spiele bedrock hauptsächlich</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 14:54</span>
+        </div><div class="msg-content">Sag ich nur in Talks</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:54</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 14:55</span>
+        </div><div class="msg-content">naja schade aber ich wünsche dir das beste weiterhin</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:06</span>
+        </div><div class="msg-content">Willst du den Auftrag trotzdem machen lassen ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:06</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt;</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:07</span>
+        </div><div class="msg-content">ich rede mal mit stier ich bespreche das noch mal</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:18</span>
+        </div><div class="msg-content">&lt;@1498768663119921173&gt; &lt;@1305163784154779698&gt; könnte dad übernehmen er ist kein Builder sondern normalerweise karten Builder aber er hat Litematica und baut auch manchmal Bauwerke</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:19</span>
+        </div><div class="msg-content">ist er vorbestraft ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:19</span>
+        </div><div class="msg-content">also hatte er schon mal ein bann</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:19</span>
+        </div><div class="msg-content">Nein 😇</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:19</span>
+        </div><div class="msg-content">ok wie ist sein ingame name</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:22</span>
+        </div><div class="msg-content">Sushi339</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:23</span>
+        </div><div class="msg-content">Er kommt gerade on falls was wäre</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">K</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">K-Builder | sushi339</span>
+          
+          <span class="msg-time">Heute um 15:35</span>
+        </div><div class="msg-content">Hey &lt;@1498768663119921173&gt;  Auf welchen City Build `CB` Wäre es Denn?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:36</span>
+        </div><div class="msg-content">cb3</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:36</span>
+        </div><div class="msg-content">sushi wie alt bist du wenn ich fragen darf und bist du in einem clan ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 15:37</span>
+        </div><div class="msg-content">Er ist bei uns intern</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">K</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">K-Builder | sushi339</span>
+          
+          <span class="msg-time">Heute um 15:37</span>
+        </div><div class="msg-content">Mein Alter Wäre 15 Jahre</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:38</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:38</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:38</span>
+        </div><div class="msg-content">ich halte kurz rücksprache mit stier</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 15:38</span>
+        </div><div class="msg-content">sushi wäre ein cool gespräch mit dir möglich ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">K</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">K-Builder | sushi339</span>
+          
+          <span class="msg-time">Heute um 15:39</span>
+        </div><div class="msg-content">Bei Mir und Talk ist Diesen Monat Leider schwierig</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 16:00</span>
+        </div><div class="msg-content">Und ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 17:07</span>
+        </div><div class="msg-content">Hey ich muss auf Stier warten und mit ihn sprechen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 17:21</span>
+        </div><div class="msg-content">Okay wann bekommen wir eine Antwort?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 19:21</span>
+        </div><div class="msg-content">Morgen</div>      </div>
+    </div><div class="date-divider">08. October 2026</div>
+
+    <div class="message ">
+      <div class="avatar ">K</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">K-Builder | sushi339</span>
+          
+          <span class="msg-time">Heute um 17:03</span>
+        </div><div class="msg-content">Hey &lt;@1498768663119921173&gt; Wie siehts aus?</div>      </div>
+    </div><div class="date-divider">09. October 2026</div>
+
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 04:06</span>
+        </div><div class="msg-content">Hey ich hatte Rücksprache gehalten wird leider nichts</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:07</span>
+        </div><div class="msg-content">Warum ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:22</span>
+        </div><div class="msg-content">hat seine gründe grade weil ich gesehen hab wer bei euch ins team möchte</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">Okay ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">Willst du mir mal priv schreiben darüber ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">ich gib dir nur ein tipp überleg nur vorher was du machst</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">mit rechte vergabe und so</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">Das sowieso</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">gerne im call aber schreiben darüber nicht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">ich sag nur allgemein chat</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:23</span>
+        </div><div class="msg-content">Okay gerne</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:24</span>
+        </div><div class="msg-content">wann möchtest du ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:24</span>
+        </div><div class="msg-content">Ka hab 11 Bewerbungen noch offen, aber würde dir schreiben on ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:24</span>
+        </div><div class="msg-content">Oder kannst mir priv sprachnachricht senden ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:25</span>
+        </div><div class="msg-content">ok aber wenn simon drin ich bin ich sofort weg nur vor weg</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:25</span>
+        </div><div class="msg-content">also wollte dir auch noch ein vorschlag machen was deine bauaufträge an geht inzukunft</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:25</span>
+        </div><div class="msg-content">Ja ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:26</span>
+        </div><div class="msg-content">(Gerne)</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:26</span>
+        </div><div class="msg-content">meine firma kann aufträge dir abnehmen und dir dafür eine gewisse summe überlassen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:26</span>
+        </div><div class="msg-content">aber nicht wenn dieser simon auf dem dc ist hat seine gründe ich sag nur soviel hat ein grund war er aus seinem alten clan raus ist</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:27</span>
+        </div><div class="msg-content">In welchem clan war er ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:27</span>
+        </div><div class="msg-content">snake</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:27</span>
+        </div><div class="msg-content">er war da mod/ admin</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:27</span>
+        </div><div class="msg-content">und ist raus geflogen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:28</span>
+        </div><div class="msg-content">Ah ok da hab ich Kontakte ich orientiere mich da mal</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:28</span>
+        </div><div class="msg-content">ich bin da admin im clan xD</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:28</span>
+        </div><div class="msg-content">wenn kennst du von snake ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:28</span>
+        </div><div class="msg-content">Und das mit dem Vorschlag können wir gerne machen</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:29</span>
+        </div><div class="msg-content">jo aber dafür müssen wir vorher call</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:29</span>
+        </div><div class="msg-content">Hatte mehrmals mit snakebite gequatscht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:29</span>
+        </div><div class="msg-content">und ich weiß das du noch relltiv jung bist das stört mich nicht</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:29</span>
+        </div><div class="msg-content">jo er kann es dir bestätigen das du aufpassen musst</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:29</span>
+        </div><div class="msg-content">Jo frage nach</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:30</span>
+        </div><div class="msg-content">wann möchtest du wegen dem vorschlag reden ?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:30</span>
+        </div><div class="msg-content">Ka kann dir das nur spontan sagen :/</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:30</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:34</span>
+        </div><div class="msg-content">hätte auch eine idee das sich unsere firmen zusammen tun falls da auch intresse besteht glaube davon würdest du sehr viel haben</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:35</span>
+        </div><div class="msg-content">also zu einer gesamten</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:35</span>
+        </div><div class="msg-content">Joa könnte evtl was werde</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:35</span>
+        </div><div class="msg-content">Und orientiere mich gerade wegen dem thema</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:35</span>
+        </div><div class="msg-content">weil ich habe über 12mitarbeiter die sehr aktiv sind</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:36</span>
+        </div><div class="msg-content">ok</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">𝗢</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+          
+          <span class="msg-time">Heute um 06:36</span>
+        </div><div class="msg-content">Joa klingt gut wie würdest du dir das so vorstellen?</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:37</span>
+        </div><div class="msg-content">ihr könntet alle zu uns rüber kommen und ganz normal weiter arbeiten wie was genau könnte man denn per call entscheiden</div>      </div>
+    </div>
+    <div class="message ">
+      <div class="avatar ">B</div>
+      <div class="message-body">
+        <div class="message-header">
+          <span class="author-name ">BitFight</span>
+          
+          <span class="msg-time">Heute um 06:37</span>
+        </div><div class="msg-content">aber wir würden alle scammer ablehnen</div>      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-title">📊 Statistiken</div>
+      <div class="stat-row"><span class="stat-label">Nachrichten</span><span class="stat-value accent">217</span></div>
+      <div class="stat-row"><span class="stat-label">Teilnehmer</span><span class="stat-value">5</span></div>
+      <div class="stat-row"><span class="stat-label">Channel</span><span class="stat-value">#plotbau-bitfight-4</span></div>
+      <div class="stat-row"><span class="stat-label">Erstellt</span><span class="stat-value">14.10.2026</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">👥 Teilnehmer</div>
+      
+        <div class="participant">
+          <div class="participant-avatar">T</div>
+          <div class="participant-info">
+            <span class="participant-name">Ticket System</span>
+            <span class="participant-count">3 Nachrichten</span>
+          </div>
+        </div>
+        <div class="participant">
+          <div class="participant-avatar">𝗢</div>
+          <div class="participant-info">
+            <span class="participant-name">𝗢𝘄𝗻𝗲𝗿 | 𝗧𝗲𝗮𝗺𝗞𝗮𝗺𝗶𝗹</span>
+            <span class="participant-count">69 Nachrichten</span>
+          </div>
+        </div>
+        <div class="participant">
+          <div class="participant-avatar">B</div>
+          <div class="participant-info">
+            <span class="participant-name">BitFight</span>
+            <span class="participant-count">98 Nachrichten</span>
+          </div>
+        </div>
+        <div class="participant">
+          <div class="participant-avatar">B</div>
+          <div class="participant-info">
+            <span class="participant-name">Builder | Thilo7815</span>
+            <span class="participant-count">43 Nachrichten</span>
+          </div>
+        </div>
+        <div class="participant">
+          <div class="participant-avatar">K</div>
+          <div class="participant-info">
+            <span class="participant-name">K-Builder | sushi339</span>
+            <span class="participant-count">4 Nachrichten</span>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Ticket Transcript · #plotbau-bitfight-4 · Generiert am 14.10.2026 um 13:04:24 UTC
+</div>
+
+</body>
+</html>
